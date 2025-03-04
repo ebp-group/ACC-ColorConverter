@@ -1,0 +1,110 @@
+﻿html, body {
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+}
+
+.transition-width {
+  transition: width 1s ease-in-out;
+}
+
+body {
+  padding-top: 80px;
+  /* space for the top nav bar */
+}
+
+.poc_header{
+  font-size: 25px;
+    margin-left: 20px;
+    vertical-align: bottom;
+}
+
+#sidebar {
+  overflow: auto;
+  width: 100%;
+  height: calc(35vh);
+}
+
+#apsViewer {
+  width: 100%;
+}
+
+#agGrid {
+  margin: 5px 0;
+}
+
+#tree {
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+  #sidebar {
+      width: 100%;
+      top: 3em;
+      bottom: 75%;
+  }
+  #preview {
+      width: 100%;
+      top: 25%;
+      bottom: 0;
+  }
+}
+
+.icon-hub:before {
+  background-image: url(https://raw.githubusercontent.com/primer/octicons/main/icons/apps-16.svg); /* or https://raw.githubusercontent.com/primer/octicons/main/icons/stack-16.svg */
+  background-size: cover;
+}
+
+.icon-project:before {
+  
+  background-image: url(https://raw.githubusercontent.com/primer/octicons/main/icons/project-16.svg); /* or https://raw.githubusercontent.com/primer/octicons/main/icons/organization-16.svg */
+  background-size: cover;
+}
+
+.icon-my-folder:before {
+  background-image: url(https://raw.githubusercontent.com/primer/octicons/main/icons/file-directory-16.svg);
+  background-size: cover;
+}
+
+.icon-item:before {
+  background-image: url(https://raw.githubusercontent.com/primer/octicons/main/icons/file-16.svg);
+  background-size: cover;
+}
+
+.icon-version:before {
+  background-image: url(https://raw.githubusercontent.com/primer/octicons/main/icons/clock-16.svg);
+  background-size: cover;
+}
+
+/* Legend Styling */
+.legend {
+  margin: 5px 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2ch;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.list-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.legend-name {
+  margin-left: 10px;
+}
+

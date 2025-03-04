@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <title> 4D-Simulation</title>
+  <meta charset="utf-8" />
+  <link rel="icon" type="image/x-icon" href="https://cdn.autodesk.io/favicon.ico">
+  <!-- Common packages: jQuery, Bootstrap, jsTree -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/jstree.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+  <!-- ag-Grid Community Edition -->
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.1/dist/ag-grid-community.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.1/styles/ag-grid.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/inspire-tree-dom@4.0.6/dist/inspire-tree-light.min.css">
+  <!-- Autodesk Forge Viewer files -->
+  <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css"
+    type="text/css">
+  <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
+  <!-- this project files -->
+  <link href="css/main.css" rel="stylesheet" />
+  <!-- <script src="js/ForgeTree.js"></script>
+  <script src="js/ForgeViewer.js"></script> -->
+
+  <!-- 2D Viewer extension (NestedViewer) -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/autodesk-forge/forge-extensions/public/extensions/NestedViewerExtension/contents/main.css">
+  <script src="//cdn.jsdelivr.net/gh/autodesk-forge/forge-extensions/public/extensions/NestedViewerExtension/contents/main.js"></script>
+
+  <style>
+    .col-sm-4.scrollable {
+      max-height: 100vh; /* Adjust this value as needed */
+      overflow-y: auto;
+    }
+
+    .col-sm-7 {
+      max-height: 90vh; /* Adjust this value as needed */
+      width: 120vb;
+    }
+
+  </style>
+  
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div style="float: left; margin-top: 9px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Swissgrid_logo.svg" alt="Swissgrid" height="40"> 
+        <span class="poc_header"> Color Converter </span>
+      </div>
+      </ul>
+      <div style="float: right; margin-top: 11px; margin-bottom: 11px;">
+        <button class="btn btn-lg btn-default" id="autodeskSigninButton">
+          <img
+            src="https://cdn.autodesk.io/autodesk.png"
+            height="20"> Sign in
+        </button>
+      </div>
+    </div>
+  </nav>
+  <!-- End of navbar -->
+  <div class="container-fluid fill">
+    <div class="row fill">
+      <div class="col-sm-4 fill scrollable">
+        
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Projekte
+            <button class="btn btn-default btn-xs pull-right" type="button" data-toggle="collapse"
+              data-target="#sidebar" aria-expanded="true" aria-controls="sidebar">
+              <span class="glyphicon glyphicon-chevron-down"></span>
+            </button>
+          </div>
+          <div id="sidebar">
+            <div id="tree"></div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-12">
+                <label for="excelFileInput" class="btn btn-primary btn-lg btn-block">
+                  <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">Elementplan Upload
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phasen Section -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Elementkatalog
+            <button class="btn btn-default btn-xs pull-right" type="button" data-toggle="collapse"
+              data-target="#agGridContent" aria-expanded="true" aria-controls="agGridContent">
+              <span class="glyphicon glyphicon-chevron-down"></span>
+            </button>
+          </div>
+          <div id="agGridContent" class="panel-collapse collapse in">
+            <div class="panel-body">
+              <div id="agGrid" class="ag-theme-alpine" style="width: 100%;">
+                <!-- AG Grid Table will be placed here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-12">
+                <label for="save" class="btn btn-primary btn-lg btn-block">
+                  <input type="button" id="save" accept=".xlsx, .xls" style="display: none;">Speichern
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+
+      <div class="col-sm-7 fill">
+        <div id="apsViewer"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://unpkg.com/inspire-tree@4.3.1/dist/inspire-tree.js"></script>
+    <script src="https://unpkg.com/inspire-tree-dom@4.0.6/dist/inspire-tree-dom.min.js"></script>
+    <script src="js/main.js" type="module"></script>
+  <script>
+    new Clipboard('.input-group-addon');
+  </script>
+</body>
+<iframe id="hiddenFrame" style="visibility: hidden; display: none" />
+
+</html>
