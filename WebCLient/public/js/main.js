@@ -203,7 +203,7 @@ async function handleFileSelect(event) {
         const workbook = XLSX.read(data, { type: 'array' });
 
         // Check if the required sheet exists
-        const targetSheetName = "02_BIM-Elementkatalog_Equipment";
+        const targetSheetName = "Tabelle1";
         if (!workbook.SheetNames.includes(targetSheetName)) {
             alert(`The workbook does not contain a sheet named "${targetSheetName}".`);
             return;
@@ -215,49 +215,39 @@ async function handleFileSelect(event) {
         const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
         // Ensure the file has the correct structure
-        if (!rows[1] || rows[1][2] !== "BIM-Elementkategorie") {
-            alert("The file format is incorrect. Column C (row 2) must be 'BIM-Elementkategorie'.");
-            return;
-        }
+        //if (!rows[1] || rows[1][2] !== "BIM-Elementkategorie") {
+          //  alert("The file format is incorrect. Column C (row 2) must be 'BIM-Elementkategorie'.");
+            //return;
+        //}
 
         const categoryData = [];
 
         // Iterate through the rows to collect data
-        for (let i = 6; i < rows.length; i++) {
-            const categoryValue = rows[i][2]; // Column C (BIM-Elementkategorie)
+        for (let i = 0; i < rows.length; i++) {
+            const categoryValue = rows[i][0]; // Column C (BIM-Elementkategorie)
+            console.log(categoryValue);
             if (!categoryValue) continue;
 
             // Initialize a flag to track if a valid "Farbe" was found
             let foundColor = false;
 
             // Check the following rows for descriptions in column G
-            let j = i + 1;
-            while (j < rows.length && !rows[j][2]) { // As long as column C is empty (description rows)
-                if (rows[j][6] === "Farbe") { // Check if column G is "Farbe"
-                    if (rows[j][8] && isValidHex(rows[j][8])) { // Validate hex color in column I
-                        categoryData.push({
-                            category: categoryValue.toLowerCase(),
-                            color: rows[j][8],
-                        });
-                        foundColor = true;
-                        break; // Stop further processing for this category
-                    } else {
-                        console.warn(`Invalid or missing hex color for category '${categoryValue}' in row ${j + 1}.`);
-                    }
-                }
-                j++;
-            }
+            let j = i;
+            categoryData.push({
+                            category: categoryValue,
+                            color: rows[j][2],
+            });
+            foundColor = true;
+
 
             // If no valid "Farbe" is found, add a default entry (optional)
             if (!foundColor) {
                 console.warn(`No "Farbe" property found for category '${categoryValue}'.`);
                 categoryData.push({
-                    category: categoryValue.toLowerCase(),
+                    category: categoryValue,
                     color: null, // Use `null` or a default color, if desired
                 });
             }
-
-            i = j - 1; // Skip processed rows
         }
 
         console.log("Category Data:", categoryData);
@@ -274,7 +264,7 @@ async function handleFileSelect(event) {
                     return;
                 }
                 rowData.forEach((row) => {
-                    if (row.kategorie.toLowerCase().includes(category)) {
+                    if (row.kategorie.includes(category)) {
                         console.log("finally")
                         row.farbe = color; // Update the color in the grid
                         handleColorChange({ data: row, colDef: { field: 'farbe' }, newValue: color });
@@ -324,8 +314,8 @@ async function getAllElementsAndPropertiesWithColor(viewer) {
                     processed++;
                     const bimCategoryProperty = props.properties.find(
                         (prop) =>
-                            prop.displayCategory === "SG_Eigenschaften_Allgemein" &&
-                            prop.displayName === "BIM-Elementkategorie"
+                            prop.displayCategory === "HLS" &&
+                            prop.displayName === "Systemabkürzung"
                     );
 
                     const ifcGUIDProperty = props.properties.find(
